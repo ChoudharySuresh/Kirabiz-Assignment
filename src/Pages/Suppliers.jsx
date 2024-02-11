@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BuyersTable from "../Components/BuyersTable";
 import Loader from "../Components/Loader";
-
+import Filter from "../Components/Filter";
 const Suppliers = () => {
   const TABLE_HEAD = [
     "Last Traded",
@@ -47,6 +47,7 @@ const Suppliers = () => {
   return (
     <div>
       <h1>Suppliers</h1>
+      <Filter />
       {tableRows.length === 0 ? (
         <Loader />
       ) : (

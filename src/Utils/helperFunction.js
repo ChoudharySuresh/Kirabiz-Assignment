@@ -26,3 +26,6 @@ export const formateWeight = (weight) => {
 
 // search by company name
 // 'https://app.vujis.com/api/search/shipments?search_by=company&query=HIT%20PROMOTIONAL&page=1'
+
+// Search by hs_code
+// https://app.vujis.com/api/search/shipments?search_by=hs_code&query=1001'
