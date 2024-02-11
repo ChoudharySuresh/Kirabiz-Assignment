@@ -23,3 +23,6 @@ export const formateWeight = (weight) => {
   const number = Intl.NumberFormat("en-IN").format(weightInNumber);
   return number;
 };
+
+// search by company name
+// 'https://app.vujis.com/api/search/shipments?search_by=company&query=HIT%20PROMOTIONAL&page=1'

@@ -46,7 +46,7 @@ const Suppliers = () => {
   }, [page]);
   return (
     <div>
-      <h1>Buyers</h1>
+      <h1>Suppliers</h1>
       {tableRows.length === 0 ? (
         <Loader />
       ) : (
