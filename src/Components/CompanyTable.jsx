@@ -20,7 +20,7 @@ const CompanyTable = ({ tableHead, tableRows }) => {
           </tr>
         </thead>
         <tbody>
-          {/* {tableRows?.map((value, index) => {
+          {tableRows?.map((value, index) => {
             const isLast = index === tableRows.length - 1;
             const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
             return (
@@ -72,7 +72,7 @@ const CompanyTable = ({ tableHead, tableRows }) => {
                 </td>
               </tr>
             );
-          })} */}
+          })}
         </tbody>
       </table>
     </Card>

@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { setSearchBy, setQuery } from "../Store/SearchSlice";
+import { setSearchBy, setQuery, setButtonClick } from "../Store/SearchSlice";
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
@@ -21,39 +21,43 @@ const Filter = () => {
     "1107",
     "1108",
   ];
-  const [selectInput, setSelectInput] = useState(false);
-  const dispatch = useDispatch();
 
-  const onSearchByChangeHandler = (event) => {
-    const selectedOption = event.target.value;
-    dispatch(setSearchBy(selectedOption));
-    setSelectInput(selectedOption === "company");
+  const [selectedSearchBy, setSelectedSearchBy] = useState("product");
+  const [selectedHsCode, setSelectedHsCode] = useState("");
+
+  const dispatch = useDispatch();
+  const handleSearchByChange = (event) => {
+    setSelectedSearchBy(event.target.value);
   };
-  const onHSCodeChangeHandler = (event) => {
-    dispatch(setQuery(event.target.value));
+
+  const handleHsCodeChange = (event) => {
+    setSelectedHsCode(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    dispatch(setSearchBy(selectedSearchBy));
+    dispatch(setQuery(selectedHsCode));
+    dispatch(setButtonClick(true));
   };
   return (
-    <div className="flex items-center gap-4">
-      <div>
-        <select
-          onChange={onSearchByChangeHandler}
-          className="bg-black border-[1px] px-2 py-2"
-        >
-          <option value="hs_code">Product</option>
-          <option value="company">Company</option>
-        </select>
-      </div>
-      <div>
-        {selectInput ? (
-          <input
-            type="text"
-            className="bg-black px-2 py-1 border-[1px]"
-            placeholder="Enter Company Name"
-          />
-        ) : (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <div>
           <select
-            className="bg-black border-[1px] px-2 py-2"
-            onChange={onHSCodeChangeHandler}
+            className="bg-black"
+            onChange={handleSearchByChange}
+            value={selectedSearchBy}
+          >
+            <option value="hs_code">Product</option>
+            <option value="product">Company</option>
+          </select>
+        </div>
+        <div>
+          <select
+            className="bg-black"
+            value={selectedHsCode}
+            onChange={handleHsCodeChange}
           >
             {HsCode.map((option, index) => {
               return (
@@ -63,11 +67,11 @@ const Filter = () => {
               );
             })}
           </select>
-        )}
-      </div>
-      <button className="bg-gray-200 px-2 py-2 rounded-md">
-        <MagnifyingGlassIcon className="h-5 w-5 text-black" />
-      </button>
+        </div>
+        <button type="submit" className="bg-gray-300 text-black">
+          <MagnifyingGlassIcon className="h-5 w-5 " />
+        </button>
+      </form>
     </div>
   );
 };

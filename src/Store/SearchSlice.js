@@ -4,7 +4,8 @@ const SearchSlice = createSlice({
   name: "Search",
   initialState: {
     searchBy: "hs_code",
-    query: "",
+    query: "1001",
+    isButtonClick: false,
   },
   reducers: {
     setSearchBy: (state, action) => {
@@ -13,8 +14,11 @@ const SearchSlice = createSlice({
     setQuery: (state, action) => {
       state.query = action.payload;
     },
+    setButtonClick: (state, action) => {
+      state.isButtonClick = action.payload;
+    },
   },
 });
-export const { setSearchBy, setQuery } = SearchSlice.actions;
+export const { setSearchBy, setQuery, setButtonClick } = SearchSlice.actions;
 
 export default SearchSlice.reducer;

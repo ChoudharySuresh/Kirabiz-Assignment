@@ -15,6 +15,7 @@ const Companies = () => {
       });
       const jsonResponse = await response.data;
       setTableRows(jsonResponse?.rows);
+      console.log(jsonResponse);
     } catch (err) {
       console.log(err);
     }
