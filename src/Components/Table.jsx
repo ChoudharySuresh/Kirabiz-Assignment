@@ -7,6 +7,8 @@ import {
 } from "../Utils/helperFunction";
 
 const Table = ({ tableHead, tableRows }) => {
+  console.log(tableHead);
+  console.log(tableRows);
   return (
     <Card className="w-full">
       <table className="w-full min-w-max table-auto text-left bg-black ">
@@ -37,7 +39,7 @@ const Table = ({ tableHead, tableRows }) => {
                     color="blue-gray"
                     className="font-normal text-white"
                   >
-                    {formatDate(value.date)}
+                    {value.date}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -71,9 +73,9 @@ const Table = ({ tableHead, tableRows }) => {
                   <Typography
                     variant="small"
                     color="blue-gray"
-                    className="font-normal text-white"
+                    className="font-normal text-white w-[5rem]"
                   >
-                    {truncateText(value.product, 18)}
+                    {value.product}
                   </Typography>
                 </td>
                 <td className={classes}>
@@ -100,7 +102,7 @@ const Table = ({ tableHead, tableRows }) => {
                     color="blue-gray"
                     className="font-normal text-white"
                   >
-                    {formatQuantity(value.quantity)}
+                    {value.quantity}
                     {value.quantity_unit}
                   </Typography>
                 </td>
@@ -110,7 +112,7 @@ const Table = ({ tableHead, tableRows }) => {
                     color="blue-gray"
                     className="font-normal w-[5rem] text-white"
                   >
-                    {formateWeight(value.weight)}
+                    {value.weight}
                     {value.weight_unit}
                   </Typography>
                 </td>

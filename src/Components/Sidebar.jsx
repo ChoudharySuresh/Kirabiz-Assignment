@@ -1,32 +1,23 @@
-import {
-  Card,
-  Typography,
-  List,
-  ListItem,
-  ListItemPrefix,
-  Accordion,
-  AccordionHeader,
-  AccordionBody,
-} from "@material-tailwind/react";
+import { Card, List, ListItem, ListItemPrefix } from "@material-tailwind/react";
 
+import Logo from "../Image/companyLogo.jpeg";
 import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import {
-  MagnifyingGlassIcon,
   BuildingStorefrontIcon,
   ClockIcon,
   CubeIcon,
   BuildingOffice2Icon,
   BookmarkSquareIcon,
-  ChevronDownIcon,
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
 
 const Sidebar = ({ onMenuItemClick }) => {
-  const [open, setOpen] = useState(0);
+  // const [open, setOpen] = useState(0);
 
-  const handleOpen = (value) => {
-    setOpen(open === value ? 0 : value);
-  };
+  // const handleOpen = (value, page) => {
+  //   setOpen(open === value ? 0 : value);
+  //   onMenuItemClick(page);
+  // };
 
   const handleListItemClick = (page) => {
     onMenuItemClick(page);
@@ -35,58 +26,29 @@ const Sidebar = ({ onMenuItemClick }) => {
   return (
     <Card className="h-[100vh] w-full max-w-[20rem] p-4 bg-black shadow-sm shadow-gray-400">
       <div className="mb-2 p-4">
-        <Typography variant="h5" color="white">
-          VUJIS
-        </Typography>
+        <img src={Logo} alt="companyLogo" />
       </div>
       <List>
-        <Accordion
-          open={open === 1}
-          icon={
-            <ChevronDownIcon
-              strokeWidth={2.5}
-              className={`mx-auto h-4 w-4 transition-transform text-white ${
-                open === 1 ? "rotate-180" : ""
-              }`}
-            />
-          }
-        >
-          <ListItem className="p-0" selected={open === 1}>
-            <AccordionHeader
-              onClick={() => handleOpen(1)}
-              className="border-b-0 p-3 text-white"
-            >
-              <ListItemPrefix>
-                <MagnifyingGlassIcon className="h-5 w-5 " />
-              </ListItemPrefix>
-              <Typography color="white" className="mr-auto font-normal">
-                Search
-              </Typography>
-            </AccordionHeader>
+        <List className="p-0 text-white">
+          <ListItem onClick={() => handleListItemClick("shipments")}>
+            <ListItemPrefix>
+              <BuildingStorefrontIcon strokeWidth={3} className="h-4 w-5" />
+            </ListItemPrefix>
+            Shipments
           </ListItem>
-          <AccordionBody className="py-1 ">
-            <List className="p-0 text-white">
-              <ListItem onClick={() => handleListItemClick("shipments")}>
-                <ListItemPrefix>
-                  <BuildingStorefrontIcon strokeWidth={3} className="h-4 w-5" />
-                </ListItemPrefix>
-                Shipments
-              </ListItem>
-              <ListItem onClick={() => handleListItemClick("buyers")}>
-                <ListItemPrefix>
-                  <ClockIcon strokeWidth={3} className="h-4 w-5" />
-                </ListItemPrefix>
-                Buyers
-              </ListItem>
-              <ListItem onClick={() => handleListItemClick("suppliers")}>
-                <ListItemPrefix>
-                  <CubeIcon strokeWidth={3} className="h-4 w-5" />
-                </ListItemPrefix>
-                Suppliers
-              </ListItem>
-            </List>
-          </AccordionBody>
-        </Accordion>
+          <ListItem onClick={() => handleListItemClick("buyers")}>
+            <ListItemPrefix>
+              <ClockIcon strokeWidth={3} className="h-4 w-5" />
+            </ListItemPrefix>
+            Buyers
+          </ListItem>
+          <ListItem onClick={() => handleListItemClick("suppliers")}>
+            <ListItemPrefix>
+              <CubeIcon strokeWidth={3} className="h-4 w-5" />
+            </ListItemPrefix>
+            Suppliers
+          </ListItem>
+        </List>
 
         <ListItem
           className="text-white"

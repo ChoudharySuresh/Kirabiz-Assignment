@@ -2,10 +2,11 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../Firebaseconfig";
 import { useState } from "react";
-
+import Logo from "../Image/companyLogo.jpeg";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const handleSignUp = () => {
     navigate("/register");
@@ -17,7 +18,13 @@ const Login = () => {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/home");
     } catch (err) {
-      console.log(err);
+      if (err.code === "auth/invalid-credential") {
+        setError(
+          "Invalid user credentials. Please check your email and password."
+        );
+      } else {
+        console.log("Authentication error:", err.message);
+      }
     }
   };
   return (
@@ -28,7 +35,10 @@ const Login = () => {
             className=" w-[27%] flex flex-col gap-3"
             onSubmit={handleSubmit}
           >
-            <h1 className="text-center">VUJIS</h1>
+            <div>
+              <img src={Logo} alt="companyLogo" />
+            </div>
+            {error && <p className="text-red-500 text-center">{error}</p>}
             <div>
               <label htmlFor="email" className="block my-3 text-gray-400">
                 Email

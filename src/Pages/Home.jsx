@@ -6,6 +6,7 @@ import Suppliers from "./Suppliers";
 import Companies from "./Companies";
 import Saved from "./Saved";
 import Account from "./Account";
+import SearchShipments from "./SearchShipments";
 const Home = () => {
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
 
@@ -17,7 +18,7 @@ const Home = () => {
       <Sidebar onMenuItemClick={handleMenuItemClick} />
 
       <div className="flex-1 p-4">
-        {/* Content for each menu item */}
+        {selectedMenuItem === "searchshipments" && <SearchShipments />}
         {selectedMenuItem === "shipments" && <Shipments />}
         {selectedMenuItem === "buyers" && <Buyers />}
         {selectedMenuItem === "suppliers" && <Suppliers />}

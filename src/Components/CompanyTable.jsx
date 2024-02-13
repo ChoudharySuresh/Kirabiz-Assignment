@@ -1,4 +1,5 @@
 import { Card, Typography } from "@material-tailwind/react";
+import { Link } from "react-router-dom";
 
 const CompanyTable = ({ tableHead, tableRows }) => {
   return (
@@ -26,13 +27,14 @@ const CompanyTable = ({ tableHead, tableRows }) => {
             return (
               <tr key={index}>
                 <td className={classes}>
-                  <Typography
+                  <Link
+                    to={`/companies/${value.name}`}
                     variant="small"
                     color="blue-gray"
-                    className="font-normal text-white"
+                    className="font-normal text-white w-[15rem]"
                   >
                     {value.name}
-                  </Typography>
+                  </Link>
                 </td>
                 <td className={classes}>
                   <Typography
@@ -47,7 +49,7 @@ const CompanyTable = ({ tableHead, tableRows }) => {
                   <Typography
                     variant="small"
                     color="blue-gray"
-                    className="font-normal text-white"
+                    className="font-normal text-white w-[15rem]"
                   >
                     {value.address}
                   </Typography>

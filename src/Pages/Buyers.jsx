@@ -2,6 +2,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import BuyersTable from "../Components/BuyersTable";
 import Loader from "../Components/Loader";
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  Typography,
+} from "@material-tailwind/react";
+import ReactFlagsSelect from "react-flags-select";
+import { IoFilterOutline } from "react-icons/io5";
 
 const Buyers = () => {
   const TABLE_HEAD = [
@@ -13,6 +22,16 @@ const Buyers = () => {
   ];
   const [page, setPage] = useState(1);
   const [tableRows, setTableRows] = useState([]);
+
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(!open);
+
+  const [selectedImportedCountry, setSelectedImportedCountry] = useState("");
+  const [SelectedExportedCountry, setSelectedExportedCountry] = useState("");
+
+  console.log(selectedImportedCountry);
+  console.log(SelectedExportedCountry);
 
   const options = [];
 
@@ -54,45 +73,66 @@ const Buyers = () => {
     setButtonClicked(true);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (isButtonClicked) {
-          const response = await axios.get(
-            `https://app.vujis.com/api/search/buyers?search_by=${searchBy}&query=${hsCode}&page=${page}`,
-            {
-              headers: {
-                Authorization:
-                  "Basic NzE5OTE3NTQtOTk2OS00MzU5LTkyOGQtYWY0MDQ2YTU5NWFlOg==",
-              },
-            }
-          );
-          const jsonResponse = await response.data;
-          setTableRows(jsonResponse?.rows);
-          console.log(jsonResponse);
-        } else {
-          const defaultResponse = await axios.get(
-            `https://app.vujis.com/api/search/buyers?page=${page}`,
-            {
-              headers: {
-                Authorization:
-                  "Basic NzE5OTE3NTQtOTk2OS00MzU5LTkyOGQtYWY0MDQ2YTU5NWFlOg==",
-              },
-            }
-          );
-          const defaultJsonResponse = await defaultResponse.data;
-          setTableRows(defaultJsonResponse?.rows);
-          console.log(defaultJsonResponse);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       if (isButtonClicked) {
+  //         const response = await axios.get(
+  //           `https://app.vujis.com/api/search/buyers?search_by=${searchBy}&query=${hsCode}&page=${page}`,
+  //           {
+  //             headers: {
+  //               Authorization:
+  //                 "Basic NjlhZjM5MDgtNGM4MC00NDlkLWIxZTAtMzFkMmVkZDcwOTM1Og==",
+  //             },
+  //           }
+  //         );
+  //         const jsonResponse = await response.data;
+  //         setTableRows(jsonResponse?.rows);
+  //         console.log(jsonResponse);
+  //       } else {
+  //         const defaultResponse = await axios.get(
+  //           `https://app.vujis.com/api/search/buyers?page=${page}`,
+  //           {
+  //             headers: {
+  //               Authorization:
+  //                 "Basic NjlhZjM5MDgtNGM4MC00NDlkLWIxZTAtMzFkMmVkZDcwOTM1Og==",
+  //             },
+  //           }
+  //         );
+  //         const defaultJsonResponse = await defaultResponse.data;
+  //         setTableRows(defaultJsonResponse?.rows);
+  //         console.log(defaultJsonResponse);
+  //       }
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+
+  //   fetchData();
+  //   setButtonClicked(false);
+  // }, [page, isButtonClicked]);
+
+  const handleFilterSearch = async () => {
+    try {
+      const response = await axios.get(
+        `https://app.vujis.com/api/search/buyers?search_by=${searchBy}&query=${hsCode}&destination=${selectedImportedCountry}&origin=${SelectedExportedCountry}&page=${page}`,
+        {
+          headers: {
+            Authorization:
+              "Basic NjlhZjM5MDgtNGM4MC00NDlkLWIxZTAtMzFkMmVkZDcwOTM1Og==",
+          },
         }
-      } catch (err) {
-        console.log(err);
-      }
-    };
+      );
 
-    fetchData();
-    setButtonClicked(false);
-  }, [page, isButtonClicked]);
+      const jsonResponse = await response.data;
+      console.log(jsonResponse);
+      setTableRows(jsonResponse?.rows);
+    } catch (err) {
+      console.log(err);
+    }
 
+    handleOpen(); // Close the filter dialog after making the API call
+  };
   return (
     <div>
       <h1>Buyers</h1>
@@ -127,8 +167,54 @@ const Buyers = () => {
           Search
         </button>
       </div>
+      <hr className="my-2" />
+      <div className="my-4">
+        <button
+          onClick={handleOpen}
+          className="px-4 py-2 text-white rounded-md flex items-center gap-2"
+        >
+          <IoFilterOutline class="h-6 w-6" />
+          Filters
+        </button>
+        <Dialog open={open} size="xs" handler={handleOpen}>
+          <DialogBody>
+            <div className="grid gap-6">
+              <Typography className="-mb-1" color="blue-gray" variant="h6">
+                Filters
+              </Typography>
+              <Typography className="-mb-1" color="blue-gray" variant="h6">
+                Importing to
+              </Typography>
+              <ReactFlagsSelect
+                selected={selectedImportedCountry}
+                onSelect={(code) => setSelectedImportedCountry(code)}
+              />
+              <Typography className="-mb-1" color="blue-gray" variant="h6">
+                Exporting to
+              </Typography>
+              <ReactFlagsSelect
+                selected={SelectedExportedCountry}
+                onSelect={(code) => setSelectedExportedCountry(code)}
+              />
+            </div>
+          </DialogBody>
+          <DialogFooter className="space-x-2">
+            <Button variant="text" color="gray" onClick={handleOpen}>
+              Close
+            </Button>
+            <Button
+              variant="gradient"
+              color="gray"
+              onClick={handleFilterSearch}
+            >
+              Search
+            </Button>
+          </DialogFooter>
+        </Dialog>
+      </div>
+      <hr className="my-2" />
       {tableRows.length === 0 ? (
-        <Loader />
+        <h1>0 Results</h1>
       ) : (
         <BuyersTable tableHead={TABLE_HEAD} tableRows={tableRows} />
       )}

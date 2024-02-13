@@ -4,6 +4,7 @@ export const truncateText = (text, maxLength) => {
   }
   return text;
 };
+
 export const formatDate = (dateString) => {
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
   return new Date(dateString).toLocaleDateString(undefined, options);
@@ -24,8 +25,3 @@ export const formateWeight = (weight) => {
   return number;
 };
 
-// search by company name
-// 'https://app.vujis.com/api/search/shipments?search_by=company&query=HIT%20PROMOTIONAL&page=1'
-
-// Search by hs_code
-// https://app.vujis.com/api/search/shipments?search_by=hs_code&query=1001'

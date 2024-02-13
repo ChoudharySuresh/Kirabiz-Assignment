@@ -3,6 +3,9 @@ import { useState } from "react";
 import axios from "axios";
 import { auth } from "../Firebaseconfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import Logo from "../Image/companyLogo.jpeg";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -10,6 +13,8 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [exists, setExists] = useState(false);
+  const [phoneNo, setPhoneNoValue] = useState("");
+  const [loginMessage, setLoginMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -42,6 +47,7 @@ const Register = () => {
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setExists(true);
+        setLoginMessage("User already exists. You can log in now.");
         navigate("/");
       } else {
         alert(error.code);
@@ -61,11 +67,13 @@ const Register = () => {
       <div>
         <div className=" flex justify-center w-[100vw] h-[100vh] items-center">
           <form
-            className=" w-[27%] flex flex-col gap-3"
+            className=" w-[30%] flex flex-col gap-3"
             onSubmit={handleSubmit}
           >
-            <h1 className="text-center my-4">VUJIS</h1>
-            <div className="flex justify-between">
+            <div>
+              <img src={Logo} alt="companyLogo" />
+            </div>
+            <div className="flex justify-between gap-2">
               <div>
                 <input
                   type="text"
@@ -99,6 +107,19 @@ const Register = () => {
               />
             </div>
             <div>
+              <PhoneInput
+                inputStyle={{
+                  width: "calc(100% - 4px)",
+                  backgroundColor: "black",
+                }}
+                dropdownStyle={{ backgroundColor: "black" }}
+                buttonStyle={{ backgroundColor: "black" }}
+                country={"us"}
+                value={phoneNo}
+                onChange={(value) => setPhoneNoValue("+" + value)}
+              />
+            </div>
+            <div>
               <input
                 type="password"
                 value={password}
@@ -128,9 +149,7 @@ const Register = () => {
             </div>
           </form>
           {exists && (
-            <p className="text-center text-red-500 mt-2">
-              User already exists. Please login.
-            </p>
+            <p className="text-center text-red-500 mt-2">{loginMessage}</p>
           )}
         </div>
       </div>
