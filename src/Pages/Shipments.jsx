@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Table from "../Components/Table";
-import Loader from "../Components/Loader";
+
 import {
   Button,
   Dialog,
@@ -33,8 +33,7 @@ const Shipments = () => {
   const [selectedImportedCountry, setSelectedImportedCountry] = useState("");
   const [SelectedExportedCountry, setSelectedExportedCountry] = useState("");
 
-  console.log(selectedImportedCountry);
-  console.log(SelectedExportedCountry);
+  const [companySuggestion, setCompanySuggestion] = useState([]);
   const options = [];
 
   for (let i = 1; i <= 100; i++) {
@@ -45,81 +44,69 @@ const Shipments = () => {
     setPage(event.target.value);
   };
 
-  const HsCode = [
-    "1001 - Wheat,meslin",
-    "1002",
-    "1004",
-    "0804 - Dates, figs, pineapples, avocados, guavas, mangoes and mangosteens, fresh or dried:",
-    "1005",
-    "1006",
-    "1007",
-    "1008",
-    "1102",
-    "1103",
-    "1104",
-    "1105",
-    "1106",
-    "1107",
-    "1108",
-  ];
-
   const [searchBy, setSearchBy] = useState("hs_code");
-  const [hsCode, setHsCode] = useState("1001");
+  const [query, setQuery] = useState("");
+
   const [isButtonClicked, setButtonClicked] = useState(false);
+
+  const [selectedOption, setSelectedOption] = useState("");
   const handleSearchByHandler = (event) => {
     setSearchBy(event.target.value);
+    setSelectedOption(event.target.value);
   };
-  const handleHsCodeHandler = (event) => {
-    setHsCode(event.target.value);
+
+  console.log(selectedOption);
+  const handleQueryHandler = (event) => {
+    setQuery(event.target.value);
   };
 
   const handleSearchClick = () => {
     setButtonClicked(true);
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       if (isButtonClicked) {
-  //         const response = await axios.get(
-  //           `https://app.vujis.com/api/search/shipments?search_by=${searchBy}&query=${hsCode}&page=${page}`,
-  //           {
-  //             headers: {
-  //               Authorization:
-  //                 "Basic NjlhZjM5MDgtNGM4MC00NDlkLWIxZTAtMzFkMmVkZDcwOTM1Og==",
-  //             },
-  //           }
-  //         );
-  //         const jsonResponse = await response.data;
-  //         setTableRows(jsonResponse?.rows);
-  //         console.log(jsonResponse);
-  //       } else {
-  //         const defaultResponse = await axios.get(
-  //           `https://app.vujis.com/api/search/shipments?page=${page}`,
-  //           {
-  //             headers: {
-  //               Authorization:
-  //                 "Basic NjlhZjM5MDgtNGM4MC00NDlkLWIxZTAtMzFkMmVkZDcwOTM1Og==",
-  //             },
-  //           }
-  //         );
-  //         const defaultJsonResponse = await defaultResponse.data;
-  //         setTableRows(defaultJsonResponse?.rows);
-  //         // console.log(defaultJsonResponse);
-  //       }
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (isButtonClicked) {
+          const response = await axios.get(
+            `https://app.vujis.com/api/search/shipments?search_by=${searchBy}&query=${query}&page=${page}`,
+            {
+              headers: {
+                Authorization:
+                  "Basic NjlhZjM5MDgtNGM4MC00NDlkLWIxZTAtMzFkMmVkZDcwOTM1Og==",
+              },
+            }
+          );
+          const jsonResponse = await response.data;
+          setTableRows(jsonResponse?.rows);
+          console.log(jsonResponse);
+        } else {
+          const defaultResponse = await axios.get(
+            `https://app.vujis.com/api/search/shipments?page=${page}`,
+            {
+              headers: {
+                Authorization:
+                  "Basic NjlhZjM5MDgtNGM4MC00NDlkLWIxZTAtMzFkMmVkZDcwOTM1Og==",
+              },
+            }
+          );
+          const defaultJsonResponse = await defaultResponse.data;
+          setTableRows(defaultJsonResponse?.rows);
+          // console.log(defaultJsonResponse);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
-  //   fetchData();
-  //   setButtonClicked(false);
-  // }, [page, isButtonClicked]);
+    fetchData();
+    setButtonClicked(false);
+  }, [page, isButtonClicked]);
 
   const handleFilterSearch = async () => {
     try {
       const response = await axios.get(
-        `https://app.vujis.com/api/search/shipments?search_by=${searchBy}&query=${hsCode}&destination=${selectedImportedCountry}&origin=${SelectedExportedCountry}&page=${page}`,
+        `https://app.vujis.com/api/search/shipments?search_by=${searchBy}&query=${query}&destination=${selectedImportedCountry}&origin=${SelectedExportedCountry}&page=${page}`,
         {
           headers: {
             Authorization:
@@ -135,15 +122,95 @@ const Shipments = () => {
       console.log(err);
     }
 
-    handleOpen(); // Close the filter dialog after making the API call
+    handleOpen();
   };
+
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [productSuggestion, setProductSuggestion] = useState([]);
+
+  const handleDropdownSelect = (selectedValue) => {
+    setQuery(selectedValue);
+    setDropdownVisible(false);
+  };
+
+  const handleCompanyDropdownSelect = (selectedValue) => {
+    setQuery(selectedValue);
+    setDropdownVisible(false);
+  };
+
+  const getSuggestions = async () => {
+    if (selectedOption === "company") {
+      try {
+        const response = await axios.get(
+          `https://app.vujis.com/api/search/suggestions/companies?query=${query}`,
+          {
+            headers: {
+              Authorization:
+                "Basic NjlhZjM5MDgtNGM4MC00NDlkLWIxZTAtMzFkMmVkZDcwOTM1Og==",
+            },
+          }
+        );
+        const jsonData = await response.data;
+        setCompanySuggestion(jsonData);
+        console.log(jsonData);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        const response = await axios.get(
+          `https://app.vujis.com/api/search/suggestions/products?query=${query}`,
+          {
+            headers: {
+              Authorization:
+                "Basic NjlhZjM5MDgtNGM4MC00NDlkLWIxZTAtMzFkMmVkZDcwOTM1Og==",
+            },
+          }
+        );
+        const jsonData = await response.data;
+        setProductSuggestion(jsonData);
+        console.log(jsonData);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      getSuggestions();
+      setDropdownVisible(query.length >= 2);
+    }, 2000);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [query]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownVisible &&
+        !document.getElementById("dropdown-container").contains(event.target)
+      ) {
+        setDropdownVisible(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [dropdownVisible]);
+
   return (
     <div>
       <h1>Shipment Page</h1>
       <div className="flex items-center gap-4">
         <div>
           <select
-            className="bg-black px-2 py-1 border-[1px]"
+            className="bg-black px-2 py-2 border-[1px]"
             onChange={handleSearchByHandler}
           >
             <option value="hs_code">Product</option>
@@ -151,18 +218,49 @@ const Shipments = () => {
           </select>
         </div>
         <div>
-          <select
-            className="bg-black px-2 py-1 border-[1px] w-[5rem]"
-            onChange={handleHsCodeHandler}
-          >
-            {HsCode.map((option, index) => {
-              return (
-                <option key={index} value={option}>
-                  {option}
-                </option>
-              );
-            })}
-          </select>
+          <input
+            type="text"
+            value={query}
+            onChange={handleQueryHandler}
+            className="bg-black text-white px-2 py-1 border-[1px] w-[15rem]"
+            placeholder="Enter the Product & HS Code"
+          />
+          {dropdownVisible && (
+            <div
+              id="dropdown-container"
+              className="bg-black absolute z-20 my-2 w-[15rem] h-[15rem] overflow-y-scroll rounded-lg shadow-2xl border border-gray-200 "
+            >
+              {selectedOption === "company" ? (
+                <ul className="my-4">
+                  {companySuggestion.map((curr, index) => {
+                    return (
+                      <li
+                        className="px-3 py-2 flex gap-4 hover:cursor-pointer"
+                        key={index}
+                        onClick={() => handleCompanyDropdownSelect(curr)}
+                      >
+                        {curr}
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <ul className="my-4">
+                  {productSuggestion.map((curr, index) => {
+                    return (
+                      <li
+                        className="px-3 py-2 flex gap-4 hover:cursor-pointer"
+                        key={index}
+                        onClick={() => handleDropdownSelect(curr.code)}
+                      >
+                        {`${curr.code} - ${curr.description}`}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          )}
         </div>
         <button
           onClick={handleSearchClick}
@@ -194,7 +292,7 @@ const Shipments = () => {
                 onSelect={(code) => setSelectedImportedCountry(code)}
               />
               <Typography className="-mb-1" color="blue-gray" variant="h6">
-                Exporting to
+                Exporting From
               </Typography>
               <ReactFlagsSelect
                 selected={SelectedExportedCountry}

@@ -39,7 +39,7 @@ const Table = ({ tableHead, tableRows }) => {
                     color="blue-gray"
                     className="font-normal text-white"
                   >
-                    {value.date}
+                    {formatDate(value.date)}
                   </Typography>
                 </td>
                 <td className={classes}>
